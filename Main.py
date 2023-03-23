@@ -12,9 +12,9 @@ database = HashTable.HashChain(10)
 loadPackageData("WGUPS Package File.csv", database)
 
 
-truck1 = Truck(18,0,"HUB", [], None, 0)
-truck2 = Truck(18, 0, "HUB", [], None, 0)
-truck3 = Truck(18, 0, "HUB", [], None, 0)
+truck1 = Truck(18,0," 6351 South 900 East\n(84121)", [], None, 0)
+truck2 = Truck(18, 0, " HUB", [], None, 0)
+truck3 = Truck(18, 0, " HUB", [], None, 0)
 
 #Turck leaving right away
 truck1.loadPackage(database.search(1))
@@ -65,12 +65,17 @@ truck3.loadPackage(database.search(6))
 #    print("Package: {}".format(database.search(i+1)))
 
 #Create the vertexes
-
+# This loads the firstColumn array with all the data from the csv file
 firstColumn = []
 with open("WGUPS Distance Table.csv") as distanceCsv:
     distanceData = csv.reader(distanceCsv, delimiter=',')
-    #next(distanceData) # skips header
     for distance in distanceData:
         firstColumn.append(distance)
 
-print(firstColumn[0][1])
+
+#This compares the inside of each array with a given address
+
+for address in firstColumn: #The entire row ['name + address', 'address', distance, distance, ...]
+    #address[1] is the delivery address that should be checked
+    if truck1.currentLocation == address[1]:
+        print(address[1])

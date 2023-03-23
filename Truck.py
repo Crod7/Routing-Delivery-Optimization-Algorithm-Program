@@ -3,7 +3,7 @@ class Truck:
     def __init__(self, speed, milage, currentLocation, packages, nextLocation, currentPackage):
         self.speed = speed
         self.milage = milage
-        self.currentLocation = None
+        self.currentLocation = currentLocation
         self.packages = []
         self.currentPackage = 0
         self.nextLocation = ""
