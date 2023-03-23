@@ -1,16 +1,20 @@
+import csv
 import Dijkstra
 import HashTable
 from Truck import Truck
+from Graph import Graph,Vertex
 from LoadPackageData import loadPackageData
+from LoadDistanceData import loadDistanceData
 
 
 database = HashTable.HashChain(10)
 
 loadPackageData("WGUPS Package File.csv", database)
 
-truck1 = Truck(18,0,"hub", [])
-truck2 = Truck(18, 0, "hub", [])
-truck3 = Truck(18, 0, "hub", [])
+
+truck1 = Truck(18,0,"HUB", [], None, 0)
+truck2 = Truck(18, 0, "HUB", [], None, 0)
+truck3 = Truck(18, 0, "HUB", [], None, 0)
 
 #Turck leaving right away
 truck1.loadPackage(database.search(1))
@@ -56,5 +60,17 @@ truck3.loadPackage(database.search(24))
 truck3.loadPackage(database.search(28))
 truck3.loadPackage(database.search(6))
 
+#loadDistanceData("WGUPS Distance Table.csv", truck1.currentLocation, truck1.nextLocation)
 #for i in range(len(database.table)+1):
 #    print("Package: {}".format(database.search(i+1)))
+
+#Create the vertexes
+
+firstColumn = []
+with open("WGUPS Distance Table.csv") as distanceCsv:
+    distanceData = csv.reader(distanceCsv, delimiter=',')
+    #next(distanceData) # skips header
+    for distance in distanceData:
+        firstColumn.append(distance)
+
+print(firstColumn[0][1])
