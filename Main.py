@@ -60,12 +60,8 @@ truck3.loadPackage(database.search(24))
 truck3.loadPackage(database.search(28))
 truck3.loadPackage(database.search(6))
 
-#loadDistanceData("WGUPS Distance Table.csv", truck1.currentLocation, truck1.nextLocation)
-#for i in range(len(database.table)+1):
-#    print("Package: {}".format(database.search(i+1)))
+###########################################################
 
-#Create the vertexes
-# This loads the firstColumn array with all the data from the csv file
 firstColumn = []
 with open("WGUPS Distance Table.csv") as distanceCsv:
     distanceData = csv.reader(distanceCsv, delimiter=',')
@@ -73,9 +69,49 @@ with open("WGUPS Distance Table.csv") as distanceCsv:
         firstColumn.append(distance)
 
 
-#This compares the inside of each array with a given address
+i = 0
+while i < len(truck1.packages):
+    print("======================================= Package " + str(i) + " Summary =======================================")
+        #This compares the inside of each array with a given address
+    countRow = 0
+    start = 0 #We set the start at 0 because 0 is where the HUB is. The program won't find HUB in the for loop
+            #but will still calculate it correctly.
+    end = 2   #We need to make this 2 to skip the first column in the csv file.
+    if i != 0:
+        truck1.currentLocation = truck1.packages[i - 1].address
+    else:
+        truck1.currentLocation = 'HUB'
+    truck1.nextLocation = truck1.packages[i].address
+    print("Current Location: " + truck1.currentLocation)
+    print("Next    Location: " + truck1.nextLocation)
 
-for address in firstColumn: #The entire row ['name + address', 'address', distance, distance, ...]
-    #address[1] is the delivery address that should be checked
-    if truck1.currentLocation == address[1]:
-        print(address[1])
+    for address in firstColumn: # The entire row ['name + address', 'address', distance, distance, ...]
+                                # address[1] is the delivery address that should be checked
+        if truck1.currentLocation == address[1][1: -8]: #If the current trucks address is equal to this other address
+            start = countRow
+            print("start found " + str(countRow))
+        if truck1.nextLocation == address[1][1: -8]:
+            end = countRow
+            print("end found " + str(countRow))
+        countRow = countRow + 1
+
+    try:
+        if firstColumn[start][end] != '':           # If distance is found, set this as the distance
+            distance = firstColumn[start][end]
+        else:                                       # If no distance found, reversing the matrix gives distance
+            distance = firstColumn[end][start + 2]
+        
+        newMilage = float(distance)                 # Convert the distance to a float to add to truck
+    except:
+        if firstColumn[end][start] != '':           # If distance is found, set this as the distance
+            distance = firstColumn[start][end+1]
+        else:                                       # If no distance found, reversing the matrix gives distance
+            distance = firstColumn[end][start + 2]
+        
+        newMilage = float(distance) 
+    
+    truck1.milage += newMilage                  # Truck's new milage is calculated
+
+    print("new milage added: "+ str(newMilage))
+    i += 1
+    print("total milage    :  " + str(truck1.milage))

@@ -6,7 +6,7 @@ class Truck:
         self.currentLocation = currentLocation
         self.packages = []
         self.currentPackage = 0
-        self.nextLocation = ""
+        self.nextLocation = ''
     
     def nextLocationFunc(self, curr):
         result = self.packages[curr]
