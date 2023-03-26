@@ -13,7 +13,7 @@ def loadPackageData(filename, thisDatabase):
             zipCode = package[4]
             deadline = package[5]
             weight = package[6]
-            deliveryStatus = "Loaded"
+            deliveryStatus = "at the hub"
 
             newPackage = Package(id, address, city, state, zipCode, deadline, deliveryStatus, weight)
 

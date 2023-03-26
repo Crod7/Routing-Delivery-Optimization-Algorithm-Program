@@ -1,11 +1,10 @@
-import csv
 import Dijkstra
 import HashTable
 from Truck import Truck
 from Graph import Graph,Vertex
 from LoadPackageData import loadPackageData
-from LoadDistanceData import loadDistanceData
 from DeliverPackages import truckRun
+from Time import timeConvertToInt, intConvertToTime
 
 
 database = HashTable.HashChain(10)
@@ -17,7 +16,7 @@ truck1 = Truck(18, 0, "HUB", [], None, 0)
 truck2 = Truck(18, 0, "HUB", [], None, 0)
 truck3 = Truck(18, 0, "HUB", [], None, 0)
 
-#Truck leaving right away
+# Truck leaving right away at 8:00am
 truck1.loadPackage(database.search(14))
 truck1.loadPackage(database.search(15))
 truck1.loadPackage(database.search(19))
@@ -34,7 +33,7 @@ truck2.loadPackage(database.search(4))
 truck2.loadPackage(database.search(5))
 truck2.loadPackage(database.search(7))
 truck1.loadPackage(database.search(8))
-#must leave at 9:05
+# must leave at 9:05 to allow for delayed packages to arrive
 truck2.loadPackage(database.search(6))
 truck2.loadPackage(database.search(18))
 truck2.loadPackage(database.search(25))
@@ -52,8 +51,7 @@ truck2.loadPackage(database.search(17))
 truck2.loadPackage(database.search(21))
 truck2.loadPackage(database.search(22))
 
-#Last truck to go out at 10:20am
-
+#Last truck to go out at 10:20am to allow for package #9 to correct it's address
 truck3.loadPackage(database.search(9)) # This is the corrected address, because it is now 10:20am
 truck3.loadPackage(database.search(23))
 truck3.loadPackage(database.search(24))
@@ -65,8 +63,11 @@ truck3.loadPackage(database.search(39))
 
 ###############################################################################
 
-truckRun(truck1, 0)
-#must leave at 9:05
-truckRun(truck2, 0)
-#must leave at 10:20 and after one of the first trucks has returned
-truckRun(truck3, 0)
+# The truckRun() function takes a Truck Object and begins it's route to deliver all packages using
+# the greedy algorithm.
+truckRun(truck1, 0, database, 8)            # The first Truck leaves at 8:00am
+truckRun(truck2, 0, database, 9.0835)       # The second Truck leaves at 9:05am
+truckRun(truck3, 0, database, 10.3335)      # The final Truck leaves at 10:20am
+
+print(intConvertToTime(10.3335))            # Turns an int into a string time
+print(timeConvertToInt("10:20:00"))
