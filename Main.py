@@ -28,10 +28,10 @@ truck1.loadPackage(database.search(29))
 truck1.loadPackage(database.search(30))
 truck1.loadPackage(database.search(34))
 truck1.loadPackage(database.search(40))
-truck2.loadPackage(database.search(2))
-truck2.loadPackage(database.search(4))
-truck2.loadPackage(database.search(5))
-truck2.loadPackage(database.search(7))
+truck1.loadPackage(database.search(2))
+truck1.loadPackage(database.search(4))
+truck1.loadPackage(database.search(5))
+truck1.loadPackage(database.search(7))
 truck1.loadPackage(database.search(8))
 # must leave at 9:05 to allow for delayed packages to arrive
 truck2.loadPackage(database.search(6))
@@ -65,9 +65,12 @@ truck3.loadPackage(database.search(39))
 
 # The truckRun() function takes a Truck Object and begins it's route to deliver all packages using
 # the greedy algorithm.
-truckRun(truck1, 0, database, 8)            # The first Truck leaves at 8:00am
-truckRun(truck2, 0, database, 9.0835)       # The second Truck leaves at 9:05am
-truckRun(truck3, 0, database, 10.3335)      # The final Truck leaves at 10:20am
+reportTime = 12
+#   name(TruckObject, starting milage, database, startingTime, reportCheck, reportTime, isCheckingReportTime, isThisFinalTruck)
+truckRun(truck1     , 0              , database, 8           , 0          , reportTime, 'y'                 , 'n')       
+truckRun(truck2     , 0              , database, 9.0835      , 0          , reportTime, 'y'                 , 'n')       
+truckRun(truck3     , 0              , database, 10.3335     , 0          , reportTime, 'y'                 , 'y')       
 
-print(intConvertToTime(10.3335))            # Turns an int into a string time
-print(timeConvertToInt("10:20:00"))
+# The first Truck leaves at 8:00am
+# The second Truck leaves at 9:05am
+# The final Truck leaves at 10:20am
