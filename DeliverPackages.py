@@ -98,25 +98,35 @@ def truckRun(truck, isFirstDropOff, database, time):    # We start by placing a 
                                                  #     has been delivered.
 
 
-    #print(nearestPackage)
+
     # If Truck object still has packages remaining, we run this code and call truckRun() again.
     if len(truck.packages) > 0:
         min_value = min(nearestNeighbor)
         smallest_index = nearestNeighbor.index(min_value)
         truck.nextLocation = truck.packages[smallest_index].address
 
-        print(truck.currentLocation + " ---> " + truck.nextLocation)
-        print(nearestNeighbor)
+        # This handles the time the package was delivered, and what appears on reports based on time
+        timeElapsed = min_value/truck.speed # Trucks traveling at 18 units per hour that have traveled
+                                            #   6 units means that 20 minutes have passed,
+                                            #   6/18 = 1/3, 1/3 of an hour is 20 minutes.
+                                            #   This is how we will include time on our deliveries.
+        
+        time += timeElapsed           # We add the time that has elapsed to the Trucks current time.
+                                            #   This is repeated for every package.
+
+        #print(truck.currentLocation + " ---> " + truck.nextLocation)
+        #print(nearestNeighbor)
 
         truck.milage += min_value
-        print(min_value)
         truck.currentLocation = truck.packages[smallest_index].address
         
         
         curr = truck.packages[smallest_index]           # curr represents the current package being dropped off.
-        curr.deliveryStatus = 'delivered'               # The status is changed to delivered.
+        curr.deliveryStatus = 'delivered at ' + str(intConvertToTime(time))# The status is changed to delivered.
         database.insert(curr.id, curr)                  # The new status is now inserted back into the database.
-
+        
+        
+        print(curr.deliveryStatus + " Package ID: " + str(curr.id)) # This will print the package's time delivered 
 
         truck.packages.pop(smallest_index)              # Removes the package from the Trucks load.
 
