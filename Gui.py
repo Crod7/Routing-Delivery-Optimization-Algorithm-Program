@@ -1,7 +1,7 @@
 from DeliverPackages import truckRun
-from OrganizeTruckLoad import organize
 
-
+# This function is called at the start of the program and managers user input. It returns data depending
+# on user needs.
 def mainMenu(truck1, truck2, truck3, database):
     print("-----UPS Routing Program-----")
     print("1. Get total milage")
@@ -64,6 +64,7 @@ def mainMenu(truck1, truck2, truck3, database):
         print("=========================================================================\n")
 
     elif select == 5:
+        exit()
         return
 
     else:
