@@ -1,3 +1,4 @@
+#We use a chaining hash table to organize our package data.
 class HashChain:
     def __init__(self, initial_capacity = 10):
         self.table = []

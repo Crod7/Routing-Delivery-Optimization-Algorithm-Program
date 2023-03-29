@@ -1,6 +1,8 @@
 import csv
 from Package import Package
 
+
+# We take thisDatabase and use it's insert method to add new package objects directly from the csv file.
 def loadPackageData(filename, thisDatabase):
     with open(filename) as packageCsv:
         packageData = csv.reader(packageCsv, delimiter=',')

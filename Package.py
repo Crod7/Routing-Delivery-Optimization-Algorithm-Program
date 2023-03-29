@@ -1,3 +1,5 @@
+
+# This class holds the package object.
 class Package:
     def __init__(self, id, address, city, state, zipCode, deadline, deliveryStatus, weight):
         self.id = id

@@ -1,4 +1,5 @@
 
+# This class holds the Truck object.
 class Truck:
     def __init__(self, speed, milage, currentLocation, packages, nextLocation, currentPackage):
         self.speed = speed

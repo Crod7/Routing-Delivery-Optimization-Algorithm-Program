@@ -1,5 +1,5 @@
 import csv
-from Time import timeConvertToInt, intConvertToTime
+from Time import intConvertToTime
 
 
 
@@ -144,6 +144,21 @@ def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isC
         time += timeElapsed           # We add the time that has elapsed to the Trucks current time.
                                             #   This is repeated for every package.
 
+        # If the current package would be delviered after the desired time of the report, we don't
+        #   include it on the report.
+        if isCheckingReportTime == 'y':
+            if (time > reportTime):
+                if reportCheck == 0:    # If this is the first time giving a report continue,
+
+                    if isThisFinalTruck == 'y': # This report is meant for the final Truck driving not the first Trucks.
+                        k = 1
+                        reportCheck = 1         # This ensures only 1 report is given
+                        while k <= 40:          # Will print out the status of all packages, this is the report
+                            print(database.search(k))
+                            k += 1
+                return
+
+
 
         # We add the milage driven to the total number of miles drivien by this Truck so far.
         truck.milage += min_value
@@ -159,7 +174,7 @@ def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isC
         database.insert(curr.id, curr)                  # The new status is now inserted back into the database.
         
         
-        print(curr.deliveryStatus + " Package ID: " + str(curr.id)) # This will print the package's time delivered 
+        #print(curr.deliveryStatus + " Package ID: " + str(curr.id)) # This will print the package's time delivered 
 
         truck.packages.pop(smallest_index)              # Removes the package from the Trucks load.
 
@@ -173,7 +188,7 @@ def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isC
     
     # If no more packages remain on the Truck, we return the total milage driven by this Truck.
     else:
-        print("total miles: " + str(truck.milage))
+        #print("total miles: " + str(truck.milage))     # This prints the total milage for this Truck.
 
 
 
@@ -187,5 +202,7 @@ def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isC
                 k = 1
                 reportCheck = 1         # This ensures only 1 report is given
                 while k <= 40:          # Will print out the status of all packages, this is the report
-                    print(database.search(k)) 
+                    print(database.search(k))
                     k += 1
+        
+                
