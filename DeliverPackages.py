@@ -4,7 +4,7 @@ from Time import intConvertToTime
 
 
 # truckRun() is a recursive function that delivers all the packages inside a Truck object's load.
-def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isCheckingReportTime, isThisFinalTruck):
+def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isCheckingReportTime, isThisFinalTruck, lookingForOnlyOnePackage):
                                                         # We start by placing a Truck object into the function argument.
                                                         # isFirstDropOff lets the program know that the truck should
                                                         #   should start at the Hub and begin delivering from there.
@@ -40,11 +40,12 @@ def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isC
     if time >= reportTime:      # If it is 8:01 and we want a report by 8:00 we will continue,
         if reportCheck == 0:    # If this is the first time giving a report continue,
             if isThisFinalTruck == 'y': # This report is meant for the final Truck driving not the first Trucks.
-                k = 1
-                reportCheck = 1         # This ensures only 1 report is given
-                while k <= 40:          # Will print out the status of all packages, this is the report
-                    print(database.search(k)) 
-                    k += 1
+                if lookingForOnlyOnePackage == 'n': # THis means that the user is looking for a full report, not just a single package
+                    k = 1
+                    reportCheck = 1         # This ensures only 1 report is given
+                    while k <= 40:          # Will print out the status of all packages, this is the report
+                        print(database.search(k)) 
+                        k += 1
     
     # We ask the user in GUI if they are seeking a certain report at a certain time. If they awnser, yes or 'y'
     # we will deliver all the packages up until that time only, as to not have inaccurate reports
@@ -151,11 +152,12 @@ def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isC
                 if reportCheck == 0:    # If this is the first time giving a report continue,
 
                     if isThisFinalTruck == 'y': # This report is meant for the final Truck driving not the first Trucks.
-                        k = 1
-                        reportCheck = 1         # This ensures only 1 report is given
-                        while k <= 40:          # Will print out the status of all packages, this is the report
-                            print(database.search(k))
-                            k += 1
+                        if lookingForOnlyOnePackage == 'n':
+                            k = 1
+                            reportCheck = 1         # This ensures only 1 report is given
+                            while k <= 40:          # Will print out the status of all packages, this is the report
+                                print(database.search(k))
+                                k += 1
                 return
 
 
@@ -178,7 +180,7 @@ def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isC
 
         truck.packages.pop(smallest_index)              # Removes the package from the Trucks load.
 
-        truckRun(truck, 1, database, time, reportCheck, reportTime, isCheckingReportTime, isThisFinalTruck) 
+        truckRun(truck, 1, database, time, reportCheck, reportTime, isCheckingReportTime, isThisFinalTruck, lookingForOnlyOnePackage) 
                                                         # A recursive function that will keep calling itself
                                                         #   until all packages are delivered.
                                                         #   Note that we now enter a 1 instead of a 0
@@ -199,10 +201,11 @@ def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isC
         if reportCheck == 0:    # If this is the first time giving a report continue,
 
             if isThisFinalTruck == 'y': # This report is meant for the final Truck driving not the first Trucks.
-                k = 1
-                reportCheck = 1         # This ensures only 1 report is given
-                while k <= 40:          # Will print out the status of all packages, this is the report
-                    print(database.search(k))
-                    k += 1
+                if lookingForOnlyOnePackage == 'n':
+                    k = 1
+                    reportCheck = 1         # This ensures only 1 report is given
+                    while k <= 40:          # Will print out the status of all packages, this is the report
+                        print(database.search(k))
+                        k += 1
         
                 

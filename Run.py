@@ -3,7 +3,7 @@ from Truck import Truck
 from LoadPackageData import loadPackageData
 from Gui import mainMenu
 from OrganizeTruckLoad import organize
-
+from Time import intConvertToTime
 
 # This function will run the entire program as an instance. As to not cause any errors or glithces
 # from running multiple calls to the database, the run function resets the data in the Hash Table and

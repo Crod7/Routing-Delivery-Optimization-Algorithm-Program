@@ -4,7 +4,7 @@ class HashChain:
         self.table = []
         for i in range(initial_capacity):
             self.table.append([])
-
+    #This will insert a new item with a key
     def insert(self, key, item):
         bucket = hash(key)% len(self.table)
         bucket_list = self.table[bucket]
@@ -18,7 +18,7 @@ class HashChain:
         key_value = [key, item]
         bucket_list.append(key_value)
         return True
-
+    #This will search for an item by using it's key
     def search(self, key):
         bucket = hash(key)% len(self.table)
         bucket_list = self.table[bucket]
@@ -28,7 +28,7 @@ class HashChain:
             if key_value[0]== key:
                 return key_value[1] #The value of key
         return None
-
+    #This will remove an item by using it's key
     def remove(self, key):
         bucket = hash(key)% len(self.table)
         bucket_list = self.table[bucket]
