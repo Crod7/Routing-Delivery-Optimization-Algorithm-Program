@@ -2,7 +2,7 @@ from DeliverPackages import truckRun
 from Time import intConvertToTime
 
 # This function is called at the start of the program and managers user input. It returns data depending
-# on user needs.
+# on user needs. THIS PART OF THE PROGRAM IS TO BE REPLACED WITH A BETTER GUI IN THE FUTURE.
 def mainMenu(truck1, truck2, truck3, database):
     print("-----UPS Routing Program-----")
     print("1. Get total milage")

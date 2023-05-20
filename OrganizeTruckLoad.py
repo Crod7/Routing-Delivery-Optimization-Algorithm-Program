@@ -1,5 +1,6 @@
 
-# This function will load all 40 packages to their correct Trucks.
+# This function will load all 40 packages to their correct Trucks. The order in which they are loaded
+# does not matter. However, loading packages to different trucks will lead to different total milage.
 def organize(truck1, truck2, truck3, database):
     # Truck leaving right away at 8:00am
     truck1.loadPackage(database.search(14))

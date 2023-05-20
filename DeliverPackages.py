@@ -1,4 +1,5 @@
 import csv
+from colorama import Fore
 from Time import intConvertToTime
 
 
@@ -22,17 +23,17 @@ def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isC
 
 
     # This if statement will stop to see if this is happening for the first time. Since this
-    #   function is called recursively, we only need to mark the packages 'en route' once.
-    #   Without the if statement, delivered packages would be marked as 'en route' causing a bug.
+    # function is called recursively, we only need to mark the packages 'en route' once.
+    # Without the if statement, delivered packages would be marked as 'en route' causing a bug.
     if isFirstDropOff == 0:
         for packages in truck.packages:
             packages.deliveryStatus = 'en route'
 
-
-
-    nearestNeighbor = []                                # This creates a temp list of current distances available to Truck
+    # This creates a temp list of current distances available to Truck
+    nearestNeighbor = []                                
     
-    nearestPackage = []                                 # This creates a temp list of packages still on Truck
+    # This creates a temp list of packages still on Truck
+    nearestPackage = []                                 
     
 ########## THIS THE THE REPORTS FUNCTIONALITY ###########################################################
     # We check to see at what time (reportTime) the user wants to check the status of all packages
@@ -43,9 +44,20 @@ def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isC
                 if lookingForOnlyOnePackage == 'n': # THis means that the user is looking for a full report, not just a single package
                     k = 1
                     reportCheck = 1         # This ensures only 1 report is given
-                    while k <= 40:          # Will print out the status of all packages, this is the report
-                        print(database.search(k)) 
+
+                    # Will print out the status of all packages, this is the report
+                    while k <= 40:
+                        # Green means delivered
+                        if 'delivered' in database.search(k).deliveryStatus:
+                            print(Fore.GREEN, database.search(k))
+                        # Yellow means en route
+                        elif 'en route' in database.search(k).deliveryStatus:
+                            print(Fore.YELLOW, database.search(k))
+                        else:
+                            print(Fore.WHITE, database.search(k))
                         k += 1
+                    # Sets the color back to normal after iteration complete
+                    print(Fore.WHITE)
     
     # We ask the user in GUI if they are seeking a certain report at a certain time. If they awnser, yes or 'y'
     # we will deliver all the packages up until that time only, as to not have inaccurate reports
@@ -64,7 +76,8 @@ def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isC
                                                         #   Each item in the list holds one row from the
                                                         #   distance table.
     
-    with open("WGUPS Distance Table.csv") as distanceCsv:   # This will fill the firstColumn[] list.
+    # This will fill the firstColumn[] list.
+    with open("WGUPS Distance Table.csv") as distanceCsv:   
         distanceData = csv.reader(distanceCsv, delimiter=',')
         for distance in distanceData:
             firstColumn.append(distance)
@@ -75,19 +88,26 @@ def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isC
     # Then after the while loop is complete, the program will have a list of all distances availble to the Truck
     # based on current location. This is what fills the nearestNeighbor[] and nearestPackage[] lists.
     while i < len(truck.packages):
-        # This compares the inside of each array with a given address
+
+        # This compares the inside of each array with a given address.
         countRow = 0
-        start = 0 # We set the start at 0 because 0 is where the HUB is. The program won't find HUB in the for loop
-                  #    but will still calculate it correctly.
-        end = 2   # We need to make this 2 to skip the first column in the csv file.
+
+        # We set the start at 0 because 0 is where the HUB is. The program won't find HUB in the for loop
+        # but will still calculate it correctly.
+        start = 0 
+
+        # We need to make this 2 to skip the first column in the csv file.
+        end = 2   
 
 
         # This will get the address of the current package being compared.
         truck.nextLocation = truck.packages[i].address
 
-        for address in firstColumn: # The entire row ['name + address', 'address', distance, distance, ...]
-                                    # address[1] is the delivery address that should be checked
-            if truck.currentLocation == address[1][1: -8]: # If the current trucks address is equal to this other address
+        # The entire row ['name + address', 'address', distance, distance, ...]
+        # address[1] is the delivery address that should be checked
+        for address in firstColumn: 
+            # If the current trucks address is equal to this other address
+            if truck.currentLocation == address[1][1: -8]:
                 start = countRow
             if truck.nextLocation == address[1][1: -8]:
                 end = countRow
@@ -97,30 +117,27 @@ def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isC
         # This determines the miles between all package locations and the current location
         # It will add all these distances to a list
         try:
-            if firstColumn[start][end] != '':           # If distance is found, set this as the distance
+            if firstColumn[start][end] != '':           
+                # If distance is found, set this as the distance
                 if start >= end:
                     distance = firstColumn[start][end + 2]
-                    #print("start > end in try 1") DEBUGGING TOOL-----------------
-                    #print("CELL: [S,E] : ["+str(start+9)+"]["+str(end + 2)+ "]") DEBUGGING TOOL------------
-                else:                                   # If firstColumn[start][end] is null, reverseing the matrix gives distance
+                else:                                   
+                    # If firstColumn[start][end] is null, reverseing the matrix gives distance
                     distance = firstColumn[end][start + 2]
-                    #print("end > start in try 1") DEBUGGING TOOL------------------
-                    #print("CELL: [E,S] : ["+str(end+9)+"]["+str(start + 2)+ "]") DEBUGGING TOOL-----------
-            else:                                       # If no distance found, reversing the matrix gives distance
+            else:                                       
+                # If no distance found, reversing the matrix gives distance
                 distance = firstColumn[end][start + 2]
-                #print("end > start in try 2") DEBUGGING TOOL------------------
-                #print("CELL: [E,S] : ["+str(end+9)+"]["+str(start + 2)+ "]") DEBUGGING TOOL
-            
-            newMilage = float(distance)                 # Convert the distance to a float to add to nearestNeighbor[]
+            # Convert the distance to a float to add to nearestNeighbor[]
+            newMilage = float(distance)
         except:
-            if firstColumn[end][start] != '':           # If distance is found, set this as the distance
+            # If distance is found, set this as the distance
+            if firstColumn[end][start] != '':           
                 distance = firstColumn[start][end+2]
-                #print("except1") DEBUGGING TOOL----------------------------
-            else:                                       # If firstColumn[start][end] is null, reverseing the matrix gives distance
+            # If firstColumn[start][end] is null, reverseing the matrix gives distance
+            else:                                       
                 distance = firstColumn[end][start + 2]
-                #print("except2") DEBUGGING TOOL----------------------------
-            
-            newMilage = float(distance)                 # Convert the distance to a float to add to nearestNeighbor[]
+            # Convert the distance to a float to add to nearestNeighbor[]
+            newMilage = float(distance)                 
         
         # Now we add the distance collected from this package route to a temporary database
         nearestNeighbor.append(newMilage)
@@ -155,9 +172,20 @@ def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isC
                         if lookingForOnlyOnePackage == 'n':
                             k = 1
                             reportCheck = 1         # This ensures only 1 report is given
-                            while k <= 40:          # Will print out the status of all packages, this is the report
-                                print(database.search(k))
+
+                            # Will print out the status of all packages, this is the report
+                            while k <= 40:
+                                # Green means delivered
+                                if 'delivered' in database.search(k).deliveryStatus:
+                                    print(Fore.GREEN, database.search(k))
+                                # Yellow means en route
+                                elif 'en route' in database.search(k).deliveryStatus:
+                                    print(Fore.YELLOW, database.search(k))
+                                else:
+                                    print(Fore.WHITE, database.search(k))
                                 k += 1
+                            # Sets the color back to normal after iteration complete
+                            print(Fore.WHITE)
                 return
 
 
@@ -169,16 +197,20 @@ def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isC
         truck.currentLocation = truck.packages[smallest_index].address
         
         
-        curr = truck.packages[smallest_index]           # curr represents the current package being dropped off.
-        curr.deliveryStatus = 'delivered at ' + str(intConvertToTime(time))# The status is changed to delivered.
+        # curr represents the current package being dropped off.
+        curr = truck.packages[smallest_index]           
+
+        # The status is changed to delivered.
+        curr.deliveryStatus = 'delivered at ' + str(intConvertToTime(time))
         
     
-        database.insert(curr.id, curr)                  # The new status is now inserted back into the database.
+        # The new status is now inserted back into the database.
+        database.insert(curr.id, curr)                  
         
         
-        #print(curr.deliveryStatus + " Package ID: " + str(curr.id)) # This will print the package's time delivered 
 
-        truck.packages.pop(smallest_index)              # Removes the package from the Trucks load.
+        # Removes the package from the Trucks load.
+        truck.packages.pop(smallest_index)              
 
         truckRun(truck, 1, database, time, reportCheck, reportTime, isCheckingReportTime, isThisFinalTruck, lookingForOnlyOnePackage) 
                                                         # A recursive function that will keep calling itself
@@ -190,22 +222,30 @@ def truckRun(truck, isFirstDropOff, database, time, reportCheck, reportTime, isC
     
     # If no more packages remain on the Truck, we return the total milage driven by this Truck.
     else:
-        #print("total miles: " + str(truck.milage))     # This prints the total milage for this Truck.
 
 
 
-        # Incase all packages are delivered before the reportTime is reached 
-        # (finished at 10am but checking till 11am), we will finish the program 
-        # after the isThisFinalTruck is complete, and give the report then.
+        # The user is allowed to enter a time(reportTime) to check the deilvery status of all packages. If the time entered is after the
+        # last package is delivered, the code below will print out a report.
 
-        if reportCheck == 0:    # If this is the first time giving a report continue,
-
-            if isThisFinalTruck == 'y': # This report is meant for the final Truck driving not the first Trucks.
+        # If this is the first time giving a report continue,
+        if reportCheck == 0:    
+            # This report is meant for the final Truck driving not the first Trucks.
+            if isThisFinalTruck == 'y': 
                 if lookingForOnlyOnePackage == 'n':
                     k = 1
-                    reportCheck = 1         # This ensures only 1 report is given
-                    while k <= 40:          # Will print out the status of all packages, this is the report
-                        print(database.search(k))
+                    # This ensures only 1 report is given
+                    reportCheck = 1         
+                    # Will print out the status of all packages, this is the report
+                    while k <= 40:
+                        # Green means delivered
+                        if 'delivered' in database.search(k).deliveryStatus:
+                            print(Fore.GREEN, database.search(k))
+                        # Yellow means en route
+                        elif 'en route' in database.search(k).deliveryStatus:
+                            print(Fore.YELLOW, database.search(k))
+                        else:
+                            print(Fore.WHITE, database.search(k))
                         k += 1
-        
-                
+                    # Sets the color back to normal after iteration complete
+                    print(Fore.WHITE)
